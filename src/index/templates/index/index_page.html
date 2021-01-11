@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>零食索引</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>零食图片</th>
+                <th>零食信息</th>
+                <th>更多信息</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .candys}}
+            <tr>
+                <th><img src="{{.Img}}"></th>
+                <th>{{.Name}}</th>
+                <th>
+                    <form action="/goods/{{.Model.ID}}" method="get">
+                    <input type="submit" value="查看详细">
+                    </form>
+                </th>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</body>
+</html>
