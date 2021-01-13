@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册</title>
+</head>
+
+<body>
+    <form action="/user/signup" method="post">
+        <p>
+            用户名：
+        </p>
+        <p>
+            <input type="text" name="user-name" required id="name">
+        </p>
+        <p>
+            邮箱：
+        </p>
+        <p>
+            <input type="email" name="email" required id="email">
+
+        </p>
+        <p>
+            密码：
+        </p>
+        <p>
+            <input type="password" name="passwd" required id="passwd">
+        </p>
+        <p>
+            密码确认：
+        </p>
+        <p>
+            <input type="password" name="passwd-ck" required id="passwd-ck">
+        </p>
+        <p>
+            注册账户类型：
+        </p>
+        <p>
+            <select name="account-level" required id="acLv">
+                <option value="0">普通用户</option>
+                <option value="1">商家</option>
+                <option value="2">管理员</option>
+            </select>
+        </p>
+
+        <p>
+            <input type="submit" value="注册">
+        </p>
+    </form>
+</body>
+
+</html>

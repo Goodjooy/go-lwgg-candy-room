@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 )
 
 /*
@@ -16,12 +17,11 @@ type Application struct {
 	viewers           []Viewer
 	viewerURLPatterns []string
 
-	templatesPath string
-	staticPath    string
+	models []interface{}
 }
 
 func NewApplication(URLPattern, templatesPath, staticPath string) Application {
-	app := Application{URLPattern: URLPattern, templatesPath: templatesPath, staticPath: staticPath}
+	app := Application{URLPattern: URLPattern}
 
 	return app
 }
@@ -47,31 +47,39 @@ func methodLimitaion(f func(c *gin.Context), supportMethods []string) gin.Handle
 	return temp
 }
 
+func (app*Application)AsignModels(models...interface{}){
+	app.models=append(app.models, models...)
+}
+
 func (app *Application) AsignViewer(viewers ...Viewer) {
 	for _, viewer := range viewers {
-		viewerURLPattern:=viewer.URLPattern
-		exist:=false
+		viewerURLPattern := viewer.URLPattern
+		exist := false
 
 		for _, pattern := range app.viewerURLPatterns {
-			if pattern==viewerURLPattern{
-				exist=true
+			if pattern == viewerURLPattern {
+				exist = true
 			}
 		}
 
-		if !exist{
-			app.viewers=append(app.viewers, viewer)
-			app.viewerURLPatterns=append(app.viewerURLPatterns, viewerURLPattern)
+		if !exist {
+			app.viewers = append(app.viewers, viewer)
+			app.viewerURLPatterns = append(app.viewerURLPatterns, viewerURLPattern)
 		}
 	}
 }
 
-func (app Application) AsignApplication(server *gin.Engine) {
-	server.LoadHTMLGlob(app.templatesPath)
-
+func (app Application) AsignApplication(server *gin.Engine, db *gorm.DB) {
 	group := server.Group(app.URLPattern)
 	viewers := app.viewers
 	for _, v := range viewers {
 		supportMethod := (v).SupportMethods
 		group.Any((v).URLPattern, methodLimitaion((v).handle, supportMethod))
+	}
+
+	for _, model := range app.models {
+		if !db.HasTable(model) {
+			db.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(model)
+		}
 	}
 }

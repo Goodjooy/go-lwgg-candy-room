@@ -1,13 +1,14 @@
 package index
 
-import "go-lwgg-candy-room/src/manage"
+import (
+	"github.com/jinzhu/gorm"
+	"go-lwgg-candy-room/src/manage"
+)
 
+func NewIndexApplication(db *gorm.DB) manage.Application {
+	app := manage.NewApplication("/", "D:\\goProject\\go-lwgg-candy-room\\templates\\**\\*", "")
 
+	app.AsignViewer(newMainPage(db))
 
-func NewIndexApplication()manage.Application{
-	app:=manage.NewApplication("/","D:\\goProject\\go-lwgg-candy-room\\src\\index\\templates\\**\\*","")
-
-	app.AsignViewer(newMainPage())
-	
 	return app
 }

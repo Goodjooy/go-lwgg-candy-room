@@ -1,6 +1,10 @@
 package manage
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+)
+
 
 const (
 	GET     = "GET"
@@ -18,7 +22,7 @@ type Viewer struct {
 	handle gin.HandlerFunc
 }
 
-func NewViewer(URLPattern string) Viewer {
+func NewViewer(URLPattern string,db *gorm.DB) Viewer {
 	return Viewer{URLPattern: URLPattern}
 }
 
