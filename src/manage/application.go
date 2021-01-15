@@ -1,6 +1,7 @@
 package manage
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"net/http"
 
@@ -74,7 +75,15 @@ func (app Application) AsignApplication(server *gin.Engine, db *gorm.DB) {
 	viewers := app.viewers
 	for _, v := range viewers {
 		supportMethod := (v).SupportMethods
-		group.Any((v).URLPattern, methodLimitaion((v).handle, supportMethod))
+		for _, a := range supportMethod {
+			switch a {
+			case GET:
+				group.GET(v.URLPattern,v.handle)
+			case POST:
+				group.POST(v.URLPattern,v.handle)
+			//:TODO more verb support
+			}
+		}
 	}
 
 	for _, model := range app.models {
@@ -82,4 +91,27 @@ func (app Application) AsignApplication(server *gin.Engine, db *gorm.DB) {
 			db.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(model)
 		}
 	}
+}
+
+const numStart='0'
+const lowAlphaStart='a'
+const upAlphaStart='A'
+func DateSHA256Hash(passwd string) string {
+	hash := sha256.Sum256([]byte(passwd))
+
+	var hashRe []byte
+
+	for _, v := range hash {
+		t:=v%(10+26+26)
+		if t<10 {
+			t=t+numStart
+		}else if t<26+10 {
+			t=t+lowAlphaStart-10
+		} else {
+			t=t+upAlphaStart-10-26
+		}
+		hashRe = append(hashRe, t)
+	}
+
+	return string(hashRe)
 }

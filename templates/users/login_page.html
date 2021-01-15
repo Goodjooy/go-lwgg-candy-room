@@ -8,7 +8,8 @@
 </head>
 
 <body>
-    <form action="/user/login" method="post">
+    <p>{{.info}}</p>
+    <form action="{{.targetURL}}" method="post">
         <p>邮箱地址</p>
         <p><input type="text" name="email-address" maxlength="128" required id="uid"></p>
         <p>密码</p>

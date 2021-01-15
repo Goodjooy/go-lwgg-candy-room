@@ -1,7 +1,6 @@
 package users
 
 import (
-	"crypto/sha256"
 	"fmt"
 	"net/http"
 
@@ -11,10 +10,17 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+const normalUser = 0
+const bessinessUser = 1
+const normalUserName = "普通用户"
+const bessinessUserName = "商家"
+
 const uidCookie = "__uuid"
 const passwdHashCookie = "__ps_hash__"
 
-const userMainPagePathFormat = "%s/%s/mainPage"
+const exitFlage = "-1"
+
+const userMainPagePathFormat = "%s/users/%s/mainPage"
 
 type userLogin struct {
 	EmailAddress string `form:"email"`
@@ -30,13 +36,14 @@ func newUserLoginView(db *gorm.DB) manage.Viewer {
 		var users []UserModel
 
 		if c.Request.Method == manage.POST {
+
 			var user userLogin
 			var userModel UserModel
 
 			err := c.ShouldBind(&user)
 
 			if err == nil {
-				passwdHash := passwdHash(user.Passwd)
+				passwdHash := manage.DateSHA256Hash(user.Passwd)
 				//search user
 				db.Where(&UserModel{EmailAddress: user.EmailAddress, PassWord: passwdHash}).Find(&users)
 
@@ -51,14 +58,14 @@ func newUserLoginView(db *gorm.DB) manage.Viewer {
 							appURLRoot,
 							userModel.Name))
 				} else {
-					c.Redirect(http.StatusMovedPermanently, "/user/login")
+					c.Redirect(http.StatusMovedPermanently, "/user/login?info=邮箱或者密码错误")
 				}
 			}
 		} else if c.Request.Method == manage.GET {
 			//check cookie
 			uuid, errUID := c.Cookie(uidCookie)
 			password, errpaswd := c.Cookie(passwdHashCookie)
-			if errUID == nil && errpaswd == nil {
+			if errUID == nil && errpaswd == nil && password != exitFlage {
 				var userModel UserModel
 
 				db.Where(&UserModel{UUID: uuid, PassWord: password}).Find(&users)
@@ -71,35 +78,13 @@ func newUserLoginView(db *gorm.DB) manage.Viewer {
 				}
 			}
 
-			c.HTML(http.StatusOK, "login_page.html", gin.H{})
+			c.HTML(http.StatusOK, "login_page.html", gin.H{
+				"targetURL": appURLRoot + "/login",
+				"info":      c.DefaultQuery("info", "")})
 		} else {
 			c.String(http.StatusNotFound, "不支持")
 		}
 	})
 
 	return v
-}
-
-const numStart='0'
-const lowAlphaStart='a'
-const upAlphaStart='A'
-func passwdHash(passwd string) string {
-	hash := sha256.Sum256([]byte(passwd))
-
-	var hashRe []byte
-
-	for _, v := range hash {
-		t:=v%(10+26+26)
-		if t<10 {
-			t=t+numStart
-		}else if t<26+10 {
-			t=t+lowAlphaStart-10
-		} else {
-			t=t+upAlphaStart-10-26
-		}
-		hashRe = append(hashRe, t)
-	}
-
-	return string(hashRe)
-
 }

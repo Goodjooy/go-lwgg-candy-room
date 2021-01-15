@@ -15,6 +15,8 @@ func NewUserApplication(db *gorm.DB)manage.Application{
 
 	app.AsignViewer(newUserLoginView(db))
 	app.AsignViewer(newSignupViewer(db))
+	app.AsignViewer(newUserMainView(db))
+	app.AsignViewer(newUserExitView(db))
 	
 	return app
 }
