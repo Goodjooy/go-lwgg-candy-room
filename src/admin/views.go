@@ -17,14 +17,14 @@ const passwordExitSign = "-1"
 
 type modelData struct {
 	AppName    string
-	ModelsName []Name
+	ModelsName []feildName
 }
-type Name struct {
+type feildName struct {
 	Name string
 	URL  string
 }
 
-func NewMainPageView(db *gorm.DB, admin *AdminApplication) manage.Viewer {
+func newMainPageView(db *gorm.DB, admin *AdminApplication) manage.Viewer {
 	v := manage.NewViewer("/", db)
 
 	v.AsgnMethod(manage.GET)
@@ -37,7 +37,7 @@ func NewMainPageView(db *gorm.DB, admin *AdminApplication) manage.Viewer {
 					data := modelData{AppName: name}
 					for _, value := range values {
 						modelName := reflect.TypeOf(value).Elem().Name()
-						data.ModelsName = append(data.ModelsName, Name{Name: modelName, URL: fmt.Sprintf("/%s/%s", name, modelName)})
+						data.ModelsName = append(data.ModelsName, feildName{Name: modelName, URL: fmt.Sprintf("/%s/%s", name, modelName)})
 					}
 					dataGroup = append(dataGroup, data)
 				}

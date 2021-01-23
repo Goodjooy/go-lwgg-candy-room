@@ -27,7 +27,7 @@ func NewAdminManager(db *gorm.DB) AdminApplication {
 	app.AsignModels(&SuperUser{})
 
 	app.AsignViewer(newModelManageView(db, &app))
-	app.AsignViewer(NewMainPageView(db,&app))
+	app.AsignViewer(newMainPageView(db,&app))
 	app.AsignViewer(newLoginPageView(db))
 
 	app.appsModel = make(map[string][]interface{})
