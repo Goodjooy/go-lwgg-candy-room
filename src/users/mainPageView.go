@@ -23,27 +23,27 @@ func newUserMainView(db *gorm.DB) manage.Viewer {
 		var userInfo UserModel
 		var users []UserModel
 		if c.Request.Method == manage.GET {
+			t := gin.H{}
 			userName := c.Param("userName")
+			db.Where(&UserModel{Name: userName}).Find(&users)
+
 			uuid, erruuid := c.Cookie(uidCookie)
 			pass, errpass := c.Cookie(passwdHashCookie)
 
-			if errpass == nil && erruuid == nil && pass != exitFlage {
-				db.Where(&UserModel{Name: userName}).Find(&users)
+			if len(users) >= 1 {
 
-				t := gin.H{}
+				userInfo = users[0]
 
-				if len(users) >= 1 {
-					userInfo = users[0]
-
-					var userLevel string
-					switch userInfo.AccountLevel {
-					case normalUser:
-						userLevel = normalUserName
-					case bessinessUser:
-						userLevel = bessinessUserName
-					default:
-						userLevel = "unknow"
-					}
+				var userLevel string
+				switch userInfo.AccountLevel {
+				case normalUser:
+					userLevel = normalUserName
+				case bessinessUser:
+					userLevel = bessinessUserName
+				default:
+					userLevel = "unknow"
+				}
+				if errpass == nil && erruuid == nil && pass != exitFlage {
 					if userInfo.PassWord == pass && userInfo.UUID == uuid {
 
 						t = gin.H{
@@ -52,16 +52,16 @@ func newUserMainView(db *gorm.DB) manage.Viewer {
 							userShoppingBagKey: "/",
 							logoutKey:          "/user/logout",
 						}
-					} else {
-						t = gin.H{
-							userNameKey:        userInfo.Name,
-							userLevelKey:       userLevel,
-							userShoppingBagKey: "/",
-							logoutKey:          "/",
-						}
 					}
-					c.HTML(http.StatusOK, "user_main_page.html", t)
+				} else {
+					t = gin.H{
+						userNameKey:        userInfo.Name,
+						userLevelKey:       userLevel,
+						userShoppingBagKey: "/",
+						logoutKey:          "/",
+					}
 				}
+				c.HTML(http.StatusOK, "user_main_page.html", t)
 			}
 
 		}
@@ -79,7 +79,7 @@ func newUserExitView(db *gorm.DB) manage.Viewer {
 			pass, errpass := c.Cookie(passwdHashCookie)
 			if errpass == nil && pass != exitFlage {
 				c.SetCookie(passwdHashCookie, exitFlage, 3600, "/", "localhost", false, true)
-				c.Redirect(http.StatusMovedPermanently,"/user/login")
+				c.Redirect(http.StatusMovedPermanently, "/user/login")
 			}
 
 		}

@@ -7,10 +7,11 @@ import (
 )
 
 //管理员部分
-const appRootURL="/admin"
+const appRootURL = "/admin"
 
 type Application interface {
-	GetAllModels()[]interface{}
+	GetAllModels() []interface{}
+	GetAppName() string
 }
 
 type AdminApplication struct {
@@ -20,13 +21,23 @@ type AdminApplication struct {
 }
 
 func NewAdminManager(db *gorm.DB) AdminApplication {
-	app:=AdminApplication{}
-	app.Application=manage.NewApplication("/admin","","")
+	app := AdminApplication{}
+	app.Application = manage.NewApplication("/admin", "admin", "")
 
 	app.AsignModels(&SuperUser{})
 
+	app.AsignViewer(newModelManageView(db, &app))
+	app.AsignViewer(NewMainPageView(db,&app))
+	app.AsignViewer(newLoginPageView(db))
 
-	app.appsModel=make(map[string][]interface{})
+	app.appsModel = make(map[string][]interface{})
+
+	app.PushApplication(app)
 	return app
 }
 
+func (admin *AdminApplication) PushApplication(apps ...Application) {
+	for _, app := range apps {
+		admin.appsModel[app.GetAppName()] = app.GetAllModels()
+	}
+}

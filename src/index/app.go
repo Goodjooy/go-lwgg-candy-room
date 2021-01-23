@@ -6,7 +6,7 @@ import (
 )
 
 func NewIndexApplication(db *gorm.DB) manage.Application {
-	app := manage.NewApplication("/", "D:\\goProject\\go-lwgg-candy-room\\templates\\**\\*", "")
+	app := manage.NewApplication("/", "index", "")
 
 	app.AsignViewer(newMainPage(db))
 

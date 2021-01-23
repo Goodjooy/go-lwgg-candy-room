@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	uuid "github.com/satori/go.uuid"
 )
 
 /*
@@ -14,6 +15,7 @@ Application 后端的每个单独应用
 */
 type Application struct {
 	URLPattern string
+	name string
 
 	viewers           []Viewer
 	viewerURLPatterns []string
@@ -21,8 +23,8 @@ type Application struct {
 	models []interface{}
 }
 
-func NewApplication(URLPattern, templatesPath, staticPath string) Application {
-	app := Application{URLPattern: URLPattern}
+func NewApplication(URLPattern,appName,elseData string) Application {
+	app := Application{URLPattern: URLPattern,name: appName}
 
 	return app
 }
@@ -48,6 +50,13 @@ func methodLimitaion(f func(c *gin.Context), supportMethods []string) gin.Handle
 	return temp
 }
 
+func (app Application)GetAllModels()[]interface{}{
+	return app.models
+}
+func(app Application)GetAppName() string{
+	return app.name;
+}
+
 func (app*Application)AsignModels(models...interface{}){
 	app.models=append(app.models, models...)
 }
@@ -70,7 +79,7 @@ func (app *Application) AsignViewer(viewers ...Viewer) {
 	}
 }
 
-func (app Application) AsignApplication(server *gin.Engine, db *gorm.DB) {
+func (app Application) AsignApplication(server *gin.Engine, db *gorm.DB) Application{
 	group := server.Group(app.URLPattern)
 	viewers := app.viewers
 	for _, v := range viewers {
@@ -91,6 +100,7 @@ func (app Application) AsignApplication(server *gin.Engine, db *gorm.DB) {
 			db.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(model)
 		}
 	}
+	return app
 }
 
 const numStart='0'
@@ -114,4 +124,9 @@ func DateSHA256Hash(passwd string) string {
 	}
 
 	return string(hashRe)
+}
+func UUIDGenerate() string {
+	value := uuid.NewV4()
+
+	return value.String()
 }

@@ -9,7 +9,7 @@ const appURLRoot="/user"
 
 
 func NewUserApplication(db *gorm.DB)manage.Application{
-	app:=manage.NewApplication(appURLRoot,"","")
+	app:=manage.NewApplication(appURLRoot,"user","")
 
 	app.AsignModels(&UserModel{})
 

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全部模型</title>
+</head>
+<body>
+    <h1>全部模型</h1>
+    {{range .models}}
+    <h2>{{.AppName}}</h2>
+    <table>
+        <thead>
+            <th>模型名称</th>
+        </thead>
+        <tbody>
+            {{range .ModelsName}}
+            <tr>
+                <th><a href="/admin/model{{.URL}}">{{.Name}}</a></th>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+    {{end}}
+</body>
+</html>

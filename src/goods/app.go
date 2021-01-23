@@ -1,1 +1,3 @@
 package goods
+
+func newGoodsApplication()

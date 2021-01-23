@@ -8,7 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	uuid "github.com/satori/go.uuid"
 )
 
 type signupData struct {
@@ -45,7 +44,7 @@ func newSignupViewer(db *gorm.DB) manage.Viewer {
 					user = UserModel{Name: name,
 						EmailAddress: data.Email,
 						PassWord:     manage.DateSHA256Hash(passwd),
-						UUID:         uuidGenerate(),
+						UUID:         manage.UUIDGenerate(),
 						AccountLevel: uint8(accountLV)}
 
 					db.Create(&user)
@@ -67,8 +66,3 @@ func newSignupViewer(db *gorm.DB) manage.Viewer {
 	return v
 }
 
-func uuidGenerate() string {
-	value := uuid.NewV4()
-
-	return value.String()
-}

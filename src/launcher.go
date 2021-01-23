@@ -6,10 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 
+	"go-lwgg-candy-room/src/admin"
 	"go-lwgg-candy-room/src/index"
 	"go-lwgg-candy-room/src/users"
+
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
-import _"github.com/jinzhu/gorm/dialects/mysql"
 
 //TemplatePath 模板文件夹
 const TemplatePath = "../templates/**/*"
@@ -30,7 +32,7 @@ const SQLPasswd = "wyq020222"
 const DatabaseName = "marker_holder"
 
 func main() {
-	db, isOK := SqlConnection(SQLUser, SQLPasswd, DatabaseName)
+	db, isOK := sqlConnection(SQLUser, SQLPasswd, DatabaseName)
 	if !isOK {
 		return
 	}
@@ -39,19 +41,24 @@ func main() {
 	server.LoadHTMLGlob(TemplatePath)
 	server.Static("/static", StaticPath)
 
-	index.NewIndexApplication(db).AsignApplication(server,db)
-	users.NewUserApplication(db).AsignApplication(server,db)
+	adminter := admin.NewAdminManager(db)
+	adminter.AsignApplication(server, db)
+
+	//db.Create(&admin.SuperUser{UUID: manage.UUIDGenerate(), Email: "964413011@qq.com", Passwd: manage.DateSHA256Hash("wyq020222")})
+
+	adminter.PushApplication(index.NewIndexApplication(db).AsignApplication(server, db))
+	adminter.PushApplication(users.NewUserApplication(db).AsignApplication(server, db))
 
 	server.Run()
 
 	defer db.Close()
 }
 
-func SqlConnection(userID, password, dbName string) (*gorm.DB, bool) {
+func sqlConnection(userID, password, dbName string) (*gorm.DB, bool) {
 	db, err := gorm.Open("mysql", fmt.Sprintf("%s:%s@/%s?charsetutf8&parseTime=True&loc=Local", userID, password, dbName))
 	if err != nil {
 		fmt.Printf("数据库连接失败，%s", err.Error())
 		return nil, false
 	}
-	return db, true
+	return db.Debug(), true
 }

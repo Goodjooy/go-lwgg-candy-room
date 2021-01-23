@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.modelName}}管理</title>
+</head>
+<body>
+    <h1>{{.modelName}}管理</h1>
+    <table>
+        <thead>
+            {{range .modelCols}}
+            <th>{{.}}</th>
+            {{end}}
+        </thead>
+        <tbody>
+            {{range .modelInfo}}
+            <tr>
+                {{range .DataList}}
+                <th>{{.}}</th>
+                {{end}}
+                <th>
+
+                    <form action="/admin/infomation{{.InfoURL}}" method="get">
+                        <input type="submit" value="修改">
+                    </form>
+                </th>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+    <form action="/admin/append/{{.appName}}/{{.modelName}}/" method="get">
+    <input type="submit" value="添加">
+    </form>
+</body>
+</html>
