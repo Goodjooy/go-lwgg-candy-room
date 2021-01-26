@@ -7,6 +7,7 @@ import (
 )
 
 const fieldName = `^.*name:([^;]+).*$`
+const htmlType=`^.*type:([^;]+).*$`
 
 //自动生成数据
 const autoGenerateFeild = "autoG"
@@ -53,5 +54,13 @@ func adminTagLoad(target reflect.StructField, model *ModelFeild) {
 
 	if strings.Contains(adminTags, sha256Generate) {
 		model.sha256Hash = true
+	}
+
+	typeP:=regexp.MustCompile(htmlType)
+	if typeP.MatchString(adminTags){
+		types:=typeP.FindStringSubmatch(adminTags)
+		if len(types)!=0{
+			model.htmlInputType=types[1]
+		}
 	}
 }

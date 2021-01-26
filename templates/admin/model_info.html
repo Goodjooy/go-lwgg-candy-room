@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Name}}</title>
+</head>
+<body>
+    <h1>{{.Name}}</h1>
+    <form action="/admin/edit/{{.App}}/{{.Name}}/{{.Pk}}" method="post">
+        <ul>
+            {{range .feilds}}
+            <li>
+                <h5>{{.Name}}</h5>
+                <input type="{{.HTMLType}}" name="{{.Name}}" id="{{.Name}}" maxlength="{{ .MaxLen}}" value="{{.FormatedValue}}">
+            </li>
+            {{end}}
+        </ul>
+    </form>
+</body>
+</html>

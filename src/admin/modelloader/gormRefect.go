@@ -46,4 +46,11 @@ func gormTagLoad(target reflect.StructField, model *ModelFeild) {
 			model.feildName = values[1]
 		}
 	}
+
+	if !model.isPk {
+		isOK, _ := regexp.MatchString(`^.*?primary_key.*?$`, gormTags)
+		if isOK {
+			model.isPk = true
+		}
+	}
 }
