@@ -102,7 +102,7 @@ func newModelFeild(t reflect.StructField, v reflect.Value, index uint) ModelFeil
 	adminTagLoad(t, &model)
 	pkFind(&model)
 
-	model.formatedValue = dataFormat(v)
+	model.formatedValue = dataFormat(model.rawValue)
 
 	return model
 }
@@ -125,12 +125,17 @@ func pkFind(model *ModelFeild) {
 	if model.feildName == "Model" {
 		model.feildName = "id"
 		model.isPk = true
+
+		mod := model.rawValue.Interface()
+
+		model.rawValue = reflect.ValueOf(mod).FieldByName("ID")
+		model.feildType = reflect.TypeOf(model.rawValue.Uint())
 	}
 
 }
 
 func (model *ModelFeild) toHTMLData() (bool, HTMLModel) {
-	if model.autoGenerate {
+	if model.autoGenerate || model.isPk {
 		return false, HTMLModel{}
 	}
 	return true, HTMLModel{
@@ -140,7 +145,6 @@ func (model *ModelFeild) toHTMLData() (bool, HTMLModel) {
 		FormatedValue: model.formatedValue,
 		MaxLen:        model.maxSize,
 	}
-
 }
 
 //HtMLTemplateData generlate for template
@@ -159,5 +163,7 @@ func (model *ModelResult) HtMLTemplateData() map[string]interface{} {
 		}
 	}
 	data["feilds"] = feilds
+
 	return data
+	
 }

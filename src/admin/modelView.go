@@ -106,7 +106,7 @@ func modelFinding(appName, modelName string, c *gin.Context, admin *AdminApplica
 	for _, v := range models {
 		t := reflect.TypeOf(v)
 		Name := strings.ToLower(t.Elem().Name())
-		if Name == modelName {
+		if Name == strings.ToLower(modelName) {
 			targetModel = v
 			break
 		}

@@ -7,15 +7,16 @@
 </head>
 <body>
     <h1>{{.Name}}</h1>
-    <form action="/admin/edit/{{.App}}/{{.Name}}/{{.Pk}}" method="post">
+    <form action="/admin/edit/{{.App}}/{{.Name}}?pk={{.Pk}}" method="post">
         <ul>
             {{range .feilds}}
             <li>
-                <h5>{{.Name}}</h5>
+                <h5>{{.ShowName}}</h5>
                 <input type="{{.HTMLType}}" name="{{.Name}}" id="{{.Name}}" maxlength="{{ .MaxLen}}" value="{{.FormatedValue}}">
             </li>
             {{end}}
         </ul>
+        <input type="submit" value="提交更改">
     </form>
 </body>
 </html>
