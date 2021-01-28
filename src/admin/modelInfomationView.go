@@ -2,7 +2,7 @@ package admin
 
 import (
 	"fmt"
-	"go-lwgg-candy-room/src/admin/modelloader"
+	"go-lwgg-candy-room/src/manage/modelloader"
 	"go-lwgg-candy-room/src/manage"
 	"net/http"
 

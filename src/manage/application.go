@@ -10,6 +10,11 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+type administer interface {
+	GetTargetModel(appName,modelName string)interface{}
+}
+
+
 /*
 Application 后端的每个单独应用
 */
