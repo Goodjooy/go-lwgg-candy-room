@@ -3,14 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{.name}}个人主页【{{.level}}】</title>
+    {{$level := "普通用户"}}
+    {{if eq .user.AccountLevel 1}}
+    {{$level :="商家"}}
+    {{end}}
+    <title>{{.user.Name}}个人主页【{{$level}}】</title>
 </head>
 <body>
-    <h1>{{.name}}个人主页【{{.level}}】</h1>
-    <form action="{{.user_bag}}" method="get">
+    <h1>{{.user.Name}}个人主页【{{$level}}】</h1>
+    头像：
+    <img src="{{.img.ImgPath}}" height="256px">
+    <p>性别：
+        {{if eq .info.Sex 0}}
+        男
+        {{else if eq .info.Sex 1}}
+        女
+        {{else}}
+        未知
+        {{end}}
+
+    </p>
+    <ul>
+        <li>
+            个性签名：
+            <p>{{.info.PersonalSign}}</p>
+        </li>
+        <li>
+            联系电话
+            <p>{{.info.PhoneNumber}}</p>
+        </li>
+        <li>
+            家庭住址
+            <p>{{.info.Address}}</p>
+        </li>
+    </ul>
+
+
+    <form action="/user/my-bag" method="get">
         <input type="submit" value="购物车">
     </form>
-    <form action="{{.user_logout}}" method="post">
+    <form action="/user/logout" method="post">
         <input type="submit" value="登出">
     </form>
     <form action="/user/upgrade" method="post">
@@ -21,6 +53,9 @@
     </form>
     <form action="/user/edit-info" method="get">
         <input type="submit" value="修改个人信息">
+    </form>
+    <form action="/user/uploadImg" method="get">
+        <input type="submit" value="修改头像">
     </form>
 </body>
 </html>

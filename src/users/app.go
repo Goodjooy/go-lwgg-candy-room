@@ -13,6 +13,7 @@ func NewUserApplication(db *gorm.DB)manage.Application{
 
 	app.AsignModels(&UserModel{})
 	app.AsignModels(&UserInfo{})
+	app.AsignModels(&UserImage{})
 
 	app.AsignViewer(newUserLoginView(db))
 	app.AsignViewer(newSignupViewer(db))
@@ -21,6 +22,7 @@ func NewUserApplication(db *gorm.DB)manage.Application{
 	app.AsignViewer(newUserLevelUp(db))
 	app.AsignViewer(newPasswordChangeViewer(db))
 	app.AsignViewer(newPersonInfoEditViewer(db))
+	app.AsignViewer(newUploadImageViewer(db))
 
 	return app
 }

@@ -20,48 +20,22 @@ func newUserMainView(db *gorm.DB) manage.Viewer {
 	v.AsgnMethod(manage.GET)
 
 	v.AsignHandle(func(c *gin.Context) {
-		var userInfo UserModel
-		var users []UserModel
 		if c.Request.Method == manage.GET {
-			t := gin.H{}
-			userName := c.Param("userName")
-			db.Where(&UserModel{Name: userName}).Find(&users)
+			isOK, user := CheckLogin(c, db,true)
+			if isOK {
+				var info UserInfo
+				info.User = user
+				var img UserImage
+				img.User = user
 
-			uuid, erruuid := c.Cookie(uidCookie)
-			pass, errpass := c.Cookie(passwdHashCookie)
+				db.Where(&info).FirstOrCreate(&info)
+				db.Where(&img).FirstOrCreate(&img)
 
-			if len(users) >= 1 {
-
-				userInfo = users[0]
-
-				var userLevel string
-				switch userInfo.AccountLevel {
-				case normalUser:
-					userLevel = normalUserName
-				case bessinessUser:
-					userLevel = bessinessUserName
-				default:
-					userLevel = "unknow"
-				}
-				if errpass == nil && erruuid == nil && pass != exitFlage {
-					if userInfo.PassWord == pass && userInfo.UUID == uuid {
-
-						t = gin.H{
-							userNameKey:        userInfo.Name,
-							userLevelKey:       userLevel,
-							userShoppingBagKey: "/goods/my-bag",
-							logoutKey:          "/user/logout",
-						}
-					}
-				} else {
-					t = gin.H{
-						userNameKey:        userInfo.Name,
-						userLevelKey:       userLevel,
-						userShoppingBagKey: "/goods/my-bag",
-						logoutKey:          "/user/logout",
-					}
-				}
-				c.HTML(http.StatusOK, "user_main_page.html", t)
+				c.HTML(http.StatusOK, "user_main_page.html", gin.H{
+					"user": user,
+					"info": info,
+					"img":  img,
+				})
 			}
 
 		}
@@ -75,10 +49,10 @@ func newUserLevelUp(db *gorm.DB) manage.Viewer {
 
 	v.AsignHandle(func(c *gin.Context) {
 		if c.Request.Method == manage.POST {
-			
+
 			isOK, _ := CheckLogin(c, db, true)
 			if isOK {
-				c.String(http.StatusForbidden,"abab?")
+				c.String(http.StatusForbidden, "abab?")
 				//user.AccountLevel ^= 1
 				//db.Save(&user)
 				//c.Redirect(http.StatusForbidden,"/user/login")

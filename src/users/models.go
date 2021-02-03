@@ -27,3 +27,12 @@ type UserInfo struct {
 	User UserModel
 	UserID uint
 }
+
+type UserImage struct {
+	gorm.Model
+
+	ImgPath string 	`gorm:"size:64"`
+
+	User UserModel
+	UserID uint
+}

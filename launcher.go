@@ -9,38 +9,22 @@ import (
 	"go-lwgg-candy-room/src/admin"
 	"go-lwgg-candy-room/src/goods"
 	"go-lwgg-candy-room/src/index"
+	"go-lwgg-candy-room/src/manage"
 	"go-lwgg-candy-room/src/users"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-//TemplatePath 模板文件夹
-const TemplatePath = "./templates/**/*"
-
-//StaticPath 静态文件文件夹
-const StaticPath = "./static/**/*"
-
-//MediaPath 媒体文件文件夹
-const MediaPath = "./medias/**/**/*"
-
-//SQLUser 数据库用户
-const SQLUser = "root"
-
-//SQLPasswd 数据库密码
-const SQLPasswd = "wyq020222"
-
-//DatabaseName 使用数据库名称
-const DatabaseName = "marker_holder"
-
 func main() {
-	db, isOK := sqlConnection(SQLUser, SQLPasswd, DatabaseName)
+	db, isOK := sqlConnection(manage.SQLUser, manage.SQLPasswd, manage.DatabaseName)
 	if !isOK {
 		return
 	}
 
 	server := gin.Default()
-	server.LoadHTMLGlob(TemplatePath)
-	server.Static("/static", StaticPath)
+	server.LoadHTMLGlob(manage.TemplatePath)
+	server.Static(manage.StaticURLRoot, manage.StaticPath)
+	server.Static(manage.MediaURLRoot, manage.MediaPath)
 
 	adminter := admin.NewAdminManager(db)
 	adminter.AsignApplication(server, db)
@@ -50,7 +34,7 @@ func main() {
 	adminter.PushApplication(index.NewIndexApplication(db).AsignApplication(server, db))
 	adminter.PushApplication(users.NewUserApplication(db).AsignApplication(server, db))
 	adminter.PushApplication(goods.NewGoodsApplication(db).AsignApplication(server, db))
-	
+
 	server.Run(":8081")
 
 	defer db.Close()
