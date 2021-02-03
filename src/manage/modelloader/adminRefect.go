@@ -21,6 +21,8 @@ const sha256Generate = "256G"
 
 const autoGPattern = `^.*autoG:(uuidG|gormG).*$`
 
+const adminForeignKeyPattern=`fk`
+
 func adminTagLoad(target reflect.StructField, model *ModelFeild) {
 	model.editAble = false
 	model.sha256Hash = false

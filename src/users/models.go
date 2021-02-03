@@ -13,3 +13,17 @@ type UserModel struct {
 
 	AccountLevel uint8 `gorm:"not null;default:0" admin:"type:text"`
 }
+
+type UserInfo struct {
+	gorm.Model
+
+	PersonalSign string `gorm:"size:256"`
+	PhoneNumber  string `grom:"size:32"`
+
+	Sex byte
+
+	Address string `gorm:"size:256"`
+
+	User UserModel
+	UserID uint
+}

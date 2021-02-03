@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Name}}商品信息</title>
+</head>
+<body>
+    <h1>{{.Name}}商品信息</h1>
+
+    <img src="{{.ImagePath}}">
+    <p>
+        名称：{{.Name}}
+    </p>
+    <p>
+        价格：{{.Price}}
+    </p>
+    <p>
+        库存：{{.RemainCount}}
+    </p>
+    <p>
+        所属店铺：{{.Master.Name}}
+        <form action="/goods/storelist/{{.Master.ID}}" method="get">
+            <input type="submit" value="前往{{.Master.Name}}的店铺">
+        </form>
+    </p>
+    <p>
+        <form action="/goods/addBag/{{.ID}}" method="post">
+        <input type="number" name="count" id="count" min="1" 
+        max="{{.RemainCount}}" value="1">
+
+        <input type="submit" value="添加到购物车">
+        </form>
+    </p>
+</body>
+</html>

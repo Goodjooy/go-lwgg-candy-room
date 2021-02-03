@@ -92,9 +92,9 @@ func (app Application) AsignApplication(server *gin.Engine, db *gorm.DB) Applica
 		for _, a := range supportMethod {
 			switch a {
 			case GET:
-				group.GET(v.URLPattern,v.handle)
+				group.GET(v.URLPattern,v.handle...)
 			case POST:
-				group.POST(v.URLPattern,v.handle)
+				group.POST(v.URLPattern,v.handle...)
 			//:TODO more verb support
 			}
 		}

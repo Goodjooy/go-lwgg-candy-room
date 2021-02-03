@@ -11,16 +11,20 @@
             <tr>
                 <th>零食图片</th>
                 <th>零食信息</th>
+                <th>价格</th>
+                <th>库存</th>
                 <th>更多信息</th>
             </tr>
         </thead>
         <tbody>
-            {{range .candys}}
+            {{range .}}
             <tr>
-                <th><img src="{{.Img}}"></th>
+                <th><img src="{{.ImagePath}}"></th>
                 <th>{{.Name}}</th>
+                <th>{{.Price}}</th>
+                <th>{{.RemainCount}}</th>
                 <th>
-                    <form action="/goods/{{.Model.ID}}" method="get">
+                    <form action="/goods/info/{{.Model.ID}}" method="get">
                     <input type="submit" value="查看详细">
                     </form>
                 </th>

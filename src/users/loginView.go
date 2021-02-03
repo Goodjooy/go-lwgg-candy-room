@@ -53,29 +53,21 @@ func newUserLoginView(db *gorm.DB) manage.Viewer {
 					c.SetCookie(uidCookie, userModel.UUID, 3600, "/", "", false, true)
 					c.SetCookie(passwdHashCookie, userModel.PassWord, 3600, "/", "", false, true)
 
-					c.Redirect(http.StatusMovedPermanently,
+					c.Redirect(http.StatusFound,
 						fmt.Sprintf(userMainPagePathFormat,
 							appURLRoot,
 							userModel.Name))
 				} else {
-					c.Redirect(http.StatusMovedPermanently, "/user/login?info=邮箱或者密码错误")
+					c.Redirect(http.StatusFound, "/user/login?info=邮箱或者密码错误")
 				}
 			}
 		} else if c.Request.Method == manage.GET {
 			//check cookie
-			uuid, errUID := c.Cookie(uidCookie)
-			password, errpaswd := c.Cookie(passwdHashCookie)
-			if errUID == nil && errpaswd == nil && password != exitFlage {
-				var userModel UserModel
+			isOK, user := CheckLogin(c, db, false)
+			if isOK {
+				c.Redirect(http.StatusFound, fmt.Sprintf(userMainPagePathFormat, appURLRoot, user.Name))
+				return
 
-				db.Where(&UserModel{UUID: uuid, PassWord: password}).Find(&users)
-
-				if len(users) != 0 {
-					userModel = users[0]
-
-					c.Redirect(http.StatusMovedPermanently, fmt.Sprintf(userMainPagePathFormat, appURLRoot, userModel.Name))
-					return
-				}
 			}
 
 			c.HTML(http.StatusOK, "login_page.html", gin.H{
@@ -87,4 +79,33 @@ func newUserLoginView(db *gorm.DB) manage.Viewer {
 	})
 
 	return v
+}
+
+//CheckLogin 检查用户登录状态
+func CheckLogin(c *gin.Context, db *gorm.DB, autoRedirect bool) (bool, UserModel) {
+	var users []UserModel
+	var userModel UserModel
+
+	uuid, errUID := c.Cookie(uidCookie)
+	password, errpaswd := c.Cookie(passwdHashCookie)
+	if errUID == nil && errpaswd == nil && password != exitFlage {
+
+		db.Where(&UserModel{UUID: uuid, PassWord: password}).Find(&users)
+
+		var info UserInfo
+
+		
+		if len(users) >= 1 {
+			userModel = users[0]
+			info.User=userModel
+			info.Sex=2
+			db.Where(&info).FirstOrCreate(&info)
+
+			return true, userModel
+		}
+	}
+	if autoRedirect {
+		c.Redirect(http.StatusFound, "/user/login?info=请先登录")
+	}
+	return false, UserModel{}
 }

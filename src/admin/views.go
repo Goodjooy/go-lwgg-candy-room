@@ -99,6 +99,6 @@ func loginStatueCheck(c *gin.Context, db *gorm.DB) bool {
 		}
 
 	}
-	c.Redirect(http.StatusMovedPermanently, appRootURL+"/login")
+	c.Redirect(http.StatusFound, appRootURL+"/login")
 	return false
 }

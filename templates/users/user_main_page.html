@@ -13,5 +13,14 @@
     <form action="{{.user_logout}}" method="post">
         <input type="submit" value="登出">
     </form>
+    <form action="/user/upgrade" method="post">
+        <input type="submit" value="账号级别改变">
+    </form>
+    <form action="/user/password-change" method="get">
+        <input type="submit" value="更改密码">
+    </form>
+    <form action="/user/edit-info" method="get">
+        <input type="submit" value="修改个人信息">
+    </form>
 </body>
 </html>

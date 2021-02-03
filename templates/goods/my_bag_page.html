@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.User.Name}}的购物车</title>
+</head>
+<body>
+    <h1>{{.User.Name}}的购物车</h1>
+    <ul>
+        {{range .Goods}}
+        <li>
+            <p><img src="{{.Goods.ImagePath}}"></p>
+            <p>零食名称：{{.Goods.Name}}</p>
+            <p>购物车中数量：{{.Count}}</p>
+            <form action="/good/info/{{.Goods.Model.ID}}" method="get">
+            <input type="submit" value="更多商品信息">
+            </form>
+        </li>
+        {{end}}
+    </ul>
+</body>
+</html>

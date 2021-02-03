@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改个人信息</title>
+</head>
+<body>
+    <form action="/user/edit-info" method="post">
+        <p>
+            个性签名
+            <textarea name="sign" id="sign" cols="30" rows="10" maxlength="256">
+                {{.user.PersonalSign}}
+            </textarea>
+        </p>
+        <p>
+            联系电话
+            <input type="tel" name="phone" id="phone" value="{{.user.PhoneNumber}}">
+        </p>
+        <p>
+            性别：当前为选项【{{.user.Sex}}】
+            <select name="sex" id="sex" >
+                <option value="0" {{if eq .user.Sex 0}} selected {{end}}>男性</option>
+                <option value="1" {{if eq .user.Sex 1}} selected {{end}}>女性</option>
+                <option value="2" {{if eq .user.Sex 2}} selected {{end}}>未知</option>
+            </select>
+        </p>
+        <p>
+            家庭住址
+            <input type="text" name="address" id="address" value="{{.user.Address}}">
+        </p>
+
+        <input type="submit" value="确认更改">
+    </form>
+</body>
+</html>

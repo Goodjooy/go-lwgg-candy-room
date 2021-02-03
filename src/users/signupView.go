@@ -46,8 +46,11 @@ func newSignupViewer(db *gorm.DB) manage.Viewer {
 						PassWord:     manage.DateSHA256Hash(passwd),
 						UUID:         manage.UUIDGenerate(),
 						AccountLevel: uint8(accountLV)}
+					
+					
 
 					db.Create(&user)
+					db.Create(&UserInfo{Sex: 2,User: user})
 
 					c.Redirect(http.StatusMovedPermanently, fmt.Sprintf("%s/login",
 						appURLRoot))
@@ -57,7 +60,7 @@ func newSignupViewer(db *gorm.DB) manage.Viewer {
 			c.SetCookie(uidCookie, user.UUID, 3600, "/", "", false, true)
 			c.SetCookie(passwdHashCookie, user.PassWord, 3600, "/", "", false, true)
 
-			c.Redirect(http.StatusMovedPermanently, fmt.Sprintf("%s/signup", appURLRoot))
+			c.Redirect(http.StatusFound, fmt.Sprintf("%s/signup", appURLRoot))
 		} else if c.Request.Method == manage.GET {
 			c.HTML(http.StatusOK, "signup_page.html", nil)
 		}

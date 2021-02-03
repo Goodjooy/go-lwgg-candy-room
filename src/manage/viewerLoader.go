@@ -19,7 +19,7 @@ type Viewer struct {
 	URLPattern     string
 	SupportMethods []string
 
-	handle gin.HandlerFunc
+	handle []gin.HandlerFunc
 }
 
 func NewViewer(URLPattern string,db *gorm.DB) Viewer {
@@ -32,6 +32,6 @@ func (v *Viewer) AsgnMethod(methods ...string) {
 	}
 }
 
-func (v *Viewer) AsignHandle(handle gin.HandlerFunc) {
-	v.handle = handle
+func (v *Viewer) AsignHandle(handle... gin.HandlerFunc) {
+	v.handle = append(v.handle, handle...)
 }

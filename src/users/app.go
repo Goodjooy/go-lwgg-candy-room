@@ -12,11 +12,15 @@ func NewUserApplication(db *gorm.DB)manage.Application{
 	app:=manage.NewApplication(appURLRoot,"user","")
 
 	app.AsignModels(&UserModel{})
+	app.AsignModels(&UserInfo{})
 
 	app.AsignViewer(newUserLoginView(db))
 	app.AsignViewer(newSignupViewer(db))
 	app.AsignViewer(newUserMainView(db))
 	app.AsignViewer(newUserExitView(db))
-	
+	app.AsignViewer(newUserLevelUp(db))
+	app.AsignViewer(newPasswordChangeViewer(db))
+	app.AsignViewer(newPersonInfoEditViewer(db))
+
 	return app
 }

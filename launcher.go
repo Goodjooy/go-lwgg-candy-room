@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 
 	"go-lwgg-candy-room/src/admin"
+	"go-lwgg-candy-room/src/goods"
 	"go-lwgg-candy-room/src/index"
 	"go-lwgg-candy-room/src/users"
 
@@ -14,13 +15,13 @@ import (
 )
 
 //TemplatePath 模板文件夹
-const TemplatePath = "../templates/**/*"
+const TemplatePath = "./templates/**/*"
 
 //StaticPath 静态文件文件夹
-const StaticPath = "../static/**/*"
+const StaticPath = "./static/**/*"
 
 //MediaPath 媒体文件文件夹
-const MediaPath = "../medias/**/**/*"
+const MediaPath = "./medias/**/**/*"
 
 //SQLUser 数据库用户
 const SQLUser = "root"
@@ -48,8 +49,9 @@ func main() {
 
 	adminter.PushApplication(index.NewIndexApplication(db).AsignApplication(server, db))
 	adminter.PushApplication(users.NewUserApplication(db).AsignApplication(server, db))
-
-	server.Run()
+	adminter.PushApplication(goods.NewGoodsApplication(db).AsignApplication(server, db))
+	
+	server.Run(":8081")
 
 	defer db.Close()
 }

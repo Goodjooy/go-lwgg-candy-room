@@ -17,6 +17,8 @@ func (model *ModelResult) GetNeedFeilds() []ModelFeild {
 	}
 	return needFeilds
 }
+
+
 //GetUUIDGenerateFeilds 获取需要使用uuid生成器的变量
 func (model *ModelResult) GetUUIDGenerateFeilds() []ModelFeild {
 	var needFeilds []ModelFeild
@@ -71,6 +73,12 @@ func (model *ModelResult) CheckPostPram(c *gin.Context, targetModel interface{})
 		if !targetFeild.IsValid() && targetFeild.CanSet() {
 			targetFeild.Set(feild.rawValue)
 		}
+	}
+
+	//set pk to nil
+	pkFeild:=target.FieldByName(model.PkValue.feildName)
+	if  !pkFeild.IsValid()&&pkFeild.CanSet(){
+		pkFeild.Set(reflect.ValueOf(nil))
 	}
 
 	return true

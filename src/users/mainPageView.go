@@ -49,7 +49,7 @@ func newUserMainView(db *gorm.DB) manage.Viewer {
 						t = gin.H{
 							userNameKey:        userInfo.Name,
 							userLevelKey:       userLevel,
-							userShoppingBagKey: "/",
+							userShoppingBagKey: "/goods/my-bag",
 							logoutKey:          "/user/logout",
 						}
 					}
@@ -57,8 +57,8 @@ func newUserMainView(db *gorm.DB) manage.Viewer {
 					t = gin.H{
 						userNameKey:        userInfo.Name,
 						userLevelKey:       userLevel,
-						userShoppingBagKey: "/",
-						logoutKey:          "/",
+						userShoppingBagKey: "/goods/my-bag",
+						logoutKey:          "/user/logout",
 					}
 				}
 				c.HTML(http.StatusOK, "user_main_page.html", t)
@@ -69,6 +69,26 @@ func newUserMainView(db *gorm.DB) manage.Viewer {
 	})
 	return v
 }
+func newUserLevelUp(db *gorm.DB) manage.Viewer {
+	v := manage.NewViewer("/upgrade", db)
+	v.AsgnMethod(manage.POST)
+
+	v.AsignHandle(func(c *gin.Context) {
+		if c.Request.Method == manage.POST {
+			
+			isOK, _ := CheckLogin(c, db, true)
+			if isOK {
+				c.String(http.StatusForbidden,"abab?")
+				//user.AccountLevel ^= 1
+				//db.Save(&user)
+				//c.Redirect(http.StatusForbidden,"/user/login")
+			}
+		}
+	})
+
+	return v
+}
+
 func newUserExitView(db *gorm.DB) manage.Viewer {
 	v := manage.NewViewer("/logout", db)
 	v.AsgnMethod(manage.POST)
